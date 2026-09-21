@@ -1,0 +1,391 @@
+<section class="equipment-page">
+  <header class="page-header">
+    <div>
+      <h1>Locations</h1>
+    </div>
+    <div class="page-actions">
+      @if (view() === 'list') {
+        <button id="create-rental" class="primary" type="button" (click)="newRental()">
+          + Nouvelle location
+        </button>
+      } @else {
+        <button type="button" (click)="view.set('list')">Retour à la liste</button>
+      }
+    </div>
+  </header>
+  @if (view() === 'list') {
+    <section class="rental-card rental-list" aria-label="Liste des locations">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Liste des locations">
+        <table>
+          <thead>
+            <tr>
+              <th>Facture</th>
+              <th>Client</th>
+              <th>Date Livraison</th>
+              <th class="amount">Nombre de Jour</th>
+              <th class="amount">Prix Total</th>
+              <th class="amount">Payés</th>
+              <th>Status</th>
+              <th class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rental of visibleRentals(); track rental.id) {
+              <tr>
+                <td>
+                  <strong>{{ rental.numeroFacture }}</strong>
+                </td>
+                <td>{{ clientName(rental.clientId) }}</td>
+                <td>{{ formatDate(rental.dateLivraison) }}</td>
+                <td class="amount">{{ rental.nombreJour }}</td>
+                <td class="amount">
+                  <strong>{{ formatPrice(rental.prixTotal) }}</strong>
+                </td>
+                <td class="amount">{{ formatPrice(rental.paid) }}</td>
+                <td>
+                  <span class="status-badge" [class]="statusClass(rental.statut)">
+                    {{ rental.statut }}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button
+                    class="icon-button"
+                    type="button"
+                    title="Voir"
+                    [attr.aria-label]="'Voir ' + rental.numeroFacture"
+                    (click)="viewRental(rental)"
+                  >
+                    <app-icon name="eye" />
+                  </button>
+                  @if (rental.statut === 'Confirmé' || rental.statut === 'En cours') {
+                    <button
+                      class="icon-button"
+                      type="button"
+                      title="Modifier"
+                      [attr.aria-label]="'Modifier ' + rental.numeroFacture"
+                      (click)="editRental(rental)"
+                    >
+                      <app-icon name="edit" />
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td class="empty" colspan="8">Aucune location enregistrée.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span
+          >{{ firstRental() }}–{{ lastRental() }} sur
+          {{ rentalsStore.rentals().length }} locations</span
+        >
+        <nav aria-label="Pagination des locations">
+          <button
+            aria-label="Page précédente"
+            [disabled]="page() === 1"
+            (click)="goToPage(page() - 1)"
+          >
+            ‹
+          </button>
+          @for (number of pages(); track number) {
+            <button
+              [class.current]="page() === number"
+              [attr.aria-current]="page() === number ? 'page' : null"
+              [attr.aria-label]="'Page ' + number"
+              (click)="goToPage(number)"
+            >
+              {{ number }}
+            </button>
+          }
+          <button
+            aria-label="Page suivante"
+            [disabled]="page() === pageCount()"
+            (click)="goToPage(page() + 1)"
+          >
+            ›
+          </button>
+        </nav>
+        <span>{{ pageSize }} par page</span>
+      </div>
+    </section>
+  } @else {
+    <div class="rental-details">
+      <section class="rental-card client-card" aria-labelledby="rental-client-title">
+        <h2 id="rental-client-title">Client</h2>
+        <div class="field-grid">
+          @for (field of clientFields; track field.key) {
+            <div class="client-field">
+              <label [for]="'rental-client-' + field.key"
+                ><span
+                  >{{ field.label }}
+                  @if (field.required) {
+                    <span class="required" aria-hidden="true">*</span>
+                  }
+                </span>
+                <input
+                  #clientInput="ngModel"
+                  [required]="field.required"
+                  [attr.aria-invalid]="
+                    field.required &&
+                    (clientInput.touched || validationAttempted()) &&
+                    !client[field.key].trim()
+                  "
+                  [id]="'rental-client-' + field.key"
+                  [type]="field.key === 'telephone' ? 'tel' : 'text'"
+                  [ngModel]="client[field.key]"
+                  (ngModelChange)="
+                    field.key === 'telephone' ? searchClient($event) : (client[field.key] = $event)
+                  "
+                  [maxlength]="
+                    field.key === 'cin' || field.key === 'nif' || field.key === 'stat' ? 80 : 200
+                  "
+                />
+              </label>
+              @if (
+                field.required &&
+                (clientInput.touched || validationAttempted()) &&
+                !client[field.key].trim()
+              ) {
+                <p class="field-error" role="alert">{{ field.label }} est obligatoire.</p>
+              }
+              @if (field.key === 'telephone' && phoneQuery().trim() && clientMatches().length) {
+                <ul class="client-results" aria-label="Clients correspondants">
+                  @for (match of clientMatches(); track match.id) {
+                    <li>
+                      <button type="button" (click)="selectClient(match)">
+                        {{ match.nomOuRaisonSociale }} · {{ match.telephone }}
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </div>
+      </section>
+      <section class="rental-card period-card" aria-labelledby="rental-period-title">
+        <h2 id="rental-period-title">Durée de la location</h2>
+        <div class="field-grid">
+          <label class="days-field" for="rental-days"
+            ><span>Nombre de jours <span class="required" aria-hidden="true">*</span></span>
+            <input
+              required
+              id="rental-days"
+              type="number"
+              min="1"
+              step="1"
+              [ngModel]="days()"
+              (ngModelChange)="days.set($event)"
+              [attr.aria-invalid]="!validDays()"
+            />
+          </label>
+          <label for="rental-delivery"
+            ><span>Date de livraison <span class="required" aria-hidden="true">*</span></span>
+            <input
+              #deliveryInput="ngModel"
+              required
+              [attr.aria-invalid]="
+                (deliveryInput.touched || validationAttempted()) && !deliveryDate()
+              "
+              id="rental-delivery"
+              type="date"
+              [ngModel]="deliveryDate()"
+              (ngModelChange)="deliveryDate.set($event)"
+            />
+          </label>
+          <label for="rental-return"
+            ><span>Date de retour <span class="required" aria-hidden="true">*</span></span>
+            <input
+              #returnInput="ngModel"
+              required
+              id="rental-return"
+              type="date"
+              [min]="deliveryDate()"
+              [ngModel]="returnDate()"
+              (ngModelChange)="returnDate.set($event)"
+              [attr.aria-invalid]="
+                !!dateError() || ((returnInput.touched || validationAttempted()) && !returnDate())
+              "
+            />
+          </label>
+        </div>
+        @if ((deliveryInput.touched || validationAttempted()) && !deliveryDate()) {
+          <p class="field-error" role="alert">La date de livraison est obligatoire.</p>
+        }
+        @if ((returnInput.touched || validationAttempted()) && !returnDate()) {
+          <p class="field-error" role="alert">La date de retour est obligatoire.</p>
+        }
+        @if (!validDays()) {
+          <p class="field-error" role="alert">
+            Saisissez un nombre entier de jours supérieur à zéro.
+          </p>
+        }
+        @if (dateError()) {
+          <p class="field-error" role="alert">{{ dateError() }}</p>
+        }
+      </section>
+    </div>
+    <section class="rental-card items-card" aria-labelledby="rental-items-title">
+      <h2 id="rental-items-title">Matériels <span class="required" aria-hidden="true">*</span></h2>
+      @if (validationAttempted() && !lines().length) {
+        <p class="field-error" role="alert">Ajoutez au moins un matériel à la location.</p>
+      }
+      @if (canAddItems()) {
+        <form class="item-form" (ngSubmit)="addLine()">
+          <label class="designation" for="rental-equipment"
+            >Désignation
+            <input
+              id="rental-equipment"
+              name="equipment"
+              type="text"
+              list="rental-equipment-options"
+              autocomplete="off"
+              placeholder="Rechercher une catégorie ou un matériel"
+              [ngModel]="equipmentQuery()"
+              (ngModelChange)="searchEquipment($event)"
+              required
+            />
+            <datalist id="rental-equipment-options">
+              @for (item of equipmentMatches(); track item.id) {
+                <option [value]="equipmentLabel(item)"></option>
+              }
+            </datalist>
+            @if (equipmentQuery() && !equipmentMatches().length) {
+              <small class="field-error" role="status">Aucun matériel trouvé.</small>
+            }
+          </label>
+          <label for="rental-quantity"
+            >Qté
+            <input
+              id="rental-quantity"
+              name="quantity"
+              type="number"
+              min="1"
+              step="1"
+              required
+              [ngModel]="quantity()"
+              (ngModelChange)="quantity.set($event)"
+            />
+          </label>
+          <label for="rental-price"
+            >PU / jour (Ar)
+            <input
+              id="rental-price"
+              name="price"
+              type="number"
+              min="0"
+              step="0.01"
+              required
+              [ngModel]="unitPrice()"
+              (ngModelChange)="unitPrice.set($event)"
+            />
+          </label>
+          <div class="calculated">
+            <span>Total / jour</span><output>{{ formatPrice(draftDaily()) }}</output>
+          </div>
+          <div class="calculated">
+            <span>Total</span><output>{{ formatPrice(draftTotal()) }}</output>
+          </div>
+          <button class="primary" type="submit" [disabled]="!validDraft()">Ajouter</button>
+        </form>
+      }
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Matériels de la location">
+        <table>
+          <thead>
+            <tr>
+              <th>Désignation</th>
+              <th class="amount">Qté</th>
+              <th class="amount">PU / jour</th>
+              <th class="amount">Total / jour</th>
+              <th class="amount">Total</th>
+              <th class="amount">PU remboursement</th>
+              <th class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of lines(); track line.id) {
+              <tr>
+                <td>
+                  <strong>{{ line.designation }}</strong>
+                </td>
+                <td class="amount">{{ line.quantity }}</td>
+                <td class="amount">{{ formatPrice(line.unitPrice) }}</td>
+                <td class="amount">{{ formatPrice(dailyTotal(line)) }}</td>
+                <td class="amount">
+                  <strong>{{ formatPrice(lineTotal(line)) }}</strong>
+                </td>
+                <td class="amount">{{ formatPrice(line.reimbursement) }}</td>
+                <td class="actions">
+                  @if (canRemoveItems()) {
+                    <button
+                      class="icon-button"
+                      type="button"
+                      title="Retirer"
+                      [attr.aria-label]="'Retirer ' + line.designation"
+                      (click)="removeLine(line.id)"
+                    >
+                      <app-icon name="trash" />
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty">Ajoutez un matériel à la location.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="summary">
+        <div>
+          <span>Prix total</span><strong>{{ formatPrice(total()) }}</strong>
+        </div>
+        <div>
+          <span>Caution (50 %)</span><strong>{{ formatPrice(deposit()) }}</strong>
+        </div>
+        <div>
+          <label for="rental-advance">Avance (Ar)</label
+          ><input
+            id="rental-advance"
+            type="number"
+            min="0"
+            [max]="totalWithDeposit()"
+            step="0.01"
+            [ngModel]="advance()"
+            (ngModelChange)="advance.set($event)"
+            [attr.aria-invalid]="!!advanceError()"
+          />
+        </div>
+        @if (advanceError()) {
+          <p class="field-error" role="alert">{{ advanceError() }}</p>
+        }
+        <div class="remaining">
+          <span>Reste à payer</span><strong>{{ formatPrice(remaining()) }}</strong>
+        </div>
+        <p class="form-note">Reste à payer = prix total + caution − avance.</p>
+      </div>
+    </section>
+    <footer class="rental-actions">
+      @if (saveError()) {
+        <p class="field-error" role="alert">{{ saveError() }}</p>
+      }
+      @if (!activeRental()) {
+        <button id="save-rental" class="primary" type="button" (click)="saveRental()">
+          Enregistrer
+        </button>
+      } @else {
+        <button id="print-rental" class="primary" type="button" (click)="printRental()">
+          Imprimer
+        </button>
+      }
+    </footer>
+    @if (saveMessage()) {
+      <div class="save-toast" role="status">{{ saveMessage() }}</div>
+    }
+  }
+</section>

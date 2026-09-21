@@ -1,0 +1,168 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: auto;
+  background: #eee;
+  color: #171717;
+}
+.invoice-screen {
+  min-height: 100%;
+  padding: 24px;
+}
+.toolbar {
+  width: 210mm;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  text-align: right;
+}
+.toolbar button {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 6px;
+  background: #ad2b30;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+.invoice {
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  max-width: 100%;
+  margin: auto;
+  padding: 18mm 16mm;
+  background: white;
+  box-shadow: 0 4px 22px rgb(0 0 0 / 14%);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.invoice-header {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 42px;
+  align-items: start;
+}
+.invoice-date {
+  margin: 0 0 16px;
+  text-align: right;
+}
+.company {
+  border: 2px solid #222;
+  border-radius: 24px;
+  padding: 18px;
+  text-align: center;
+}
+.company h1 {
+  margin: 8px 0;
+  font-size: 27px;
+  font-style: italic;
+}
+.company h1 em {
+  font-size: 18px;
+}
+.company p {
+  margin: 3px 0;
+  font-weight: 700;
+}
+.customer h2 {
+  margin: 8px 0;
+  text-decoration: underline;
+}
+dl {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  margin: 0;
+}
+dt,
+dd {
+  padding: 3px 0;
+  border-bottom: 1px dotted #777;
+}
+dd {
+  margin: 0;
+  font-weight: 600;
+}
+.invoice-number {
+  margin: 8px 0 24px;
+  text-align: center;
+  text-decoration: underline;
+  font-size: 20px;
+}
+.rental-days {
+  margin: 30px 0 0;
+  text-align: center;
+  font-size: 14px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+th,
+td {
+  border: 1px solid #555;
+  padding: 9px 7px;
+}
+th {
+  text-align: center;
+  background: #f3f3f3;
+}
+td:not(:nth-child(2)) {
+  text-align: right;
+}
+tbody tr {
+  height: 38px;
+}
+.totals {
+  width: 48%;
+  margin: 18px 0 28px auto;
+  font-family: Arial, sans-serif;
+}
+.totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 7px 9px;
+  border-bottom: 1px solid #aaa;
+}
+.totals div:last-child {
+  font-size: 16px;
+}
+.invoice-footer {
+  line-height: 1.45;
+}
+.invoice-footer > p {
+  margin: 5px 0;
+}
+.acceptance {
+  width: 75%;
+  margin: 28px auto 0;
+}
+.not-found {
+  padding: 40px;
+  text-align: center;
+}
+@media print {
+  :host {
+    position: static;
+    overflow: visible;
+    background: white;
+  }
+  .invoice-screen {
+    padding: 0;
+  }
+  .toolbar {
+    display: none;
+  }
+  .invoice {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}

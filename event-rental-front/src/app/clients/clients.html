@@ -1,0 +1,200 @@
+<section class="equipment-page">
+  <header class="page-header">
+    <div><h1>Clients</h1></div>
+    <div class="page-actions">
+      <button
+        aria-controls="client-filters"
+        [attr.aria-expanded]="filtersVisible()"
+        (click)="filtersVisible.set(!filtersVisible())"
+      >
+        Filtre{{ hasFilters() ? ' (actif)' : '' }}
+      </button>
+      <button id="create-client" class="primary" (click)="open('create')">+ Nouveau client</button>
+    </div>
+  </header>
+  @if (notice()) {
+    <div class="notice" role="status">
+      {{ notice() }}<button aria-label="Fermer le message" (click)="notice.set('')">×</button>
+    </div>
+  }
+  @if (store.storageMessage()) {
+    <p class="error" role="alert">{{ store.storageMessage() }}</p>
+  }
+  <div class="equipment-layout" [class.panel-open]="mode()">
+    <div class="listing">
+      <div id="client-filters" class="filters" [hidden]="!filtersVisible()">
+        @for (field of fields; track field.key) {
+          <label [for]="'client-filter-' + field.key">
+            {{ field.label }}
+            <input
+              [id]="'client-filter-' + field.key"
+              type="search"
+              [value]="filters()[field.key] ?? ''"
+              (input)="filter(field.key, $any($event.target).value)"
+            />
+          </label>
+        }
+        @if (hasFilters()) {
+          <button type="button" (click)="resetFilters()">Réinitialiser</button>
+        }
+      </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Liste des clients">
+        <table>
+          <thead>
+            <tr>
+              <th>Nom ou raison sociale</th>
+              <th>Téléphone</th>
+              <th>Adresse</th>
+              <th class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of visibleItems(); track item.id) {
+              <tr
+                class="equipment-row"
+                [class.selected]="selected()?.id === item.id && mode()"
+                (click)="open('view', item)"
+              >
+                <td>
+                  <button class="item-name" (click)="$event.stopPropagation(); open('view', item)">
+                    {{ item.nomOuRaisonSociale }}
+                  </button>
+                </td>
+                <td>{{ item.telephone }}</td>
+                <td class="client-address">{{ item.adresse }}</td>
+                <td class="actions">
+                  <button
+                    class="icon-button"
+                    title="Voir"
+                    [attr.aria-label]="'Voir ' + item.nomOuRaisonSociale"
+                    (click)="$event.stopPropagation(); open('view', item)"
+                  >
+                    <app-icon name="eye" />
+                  </button>
+                  <button
+                    class="icon-button"
+                    title="Modifier"
+                    [attr.aria-label]="'Modifier ' + item.nomOuRaisonSociale"
+                    (click)="$event.stopPropagation(); open('edit', item)"
+                  >
+                    <app-icon name="edit" />
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty">Aucun client trouvé.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>{{ firstItem() }}–{{ lastItem() }} sur {{ filtered().length }} clients</span>
+        <nav aria-label="Pagination des clients">
+          <button
+            aria-label="Page précédente"
+            [disabled]="page() === 1"
+            (click)="goToPage(page() - 1)"
+          >
+            ‹
+          </button>
+          @for (number of pages(); track number) {
+            <button
+              [class.current]="page() === number"
+              [attr.aria-current]="page() === number ? 'page' : null"
+              [attr.aria-label]="'Page ' + number"
+              (click)="goToPage(number)"
+            >
+              {{ number }}
+            </button>
+          }
+          <button
+            aria-label="Page suivante"
+            [disabled]="page() === pageCount()"
+            (click)="goToPage(page() + 1)"
+          >
+            ›
+          </button>
+        </nav>
+        <span>{{ pageSize }} par page</span>
+      </div>
+    </div>
+    @if (mode()) {
+      <aside class="editor" aria-labelledby="client-panel-title">
+        <header class="editor-header">
+          <h2 id="client-panel-title" tabindex="-1">
+            {{
+              mode() === 'create'
+                ? 'Nouveau client'
+                : mode() === 'edit'
+                  ? 'Modifier le client'
+                  : 'Détail du client'
+            }}
+          </h2>
+          <button class="close" aria-label="Fermer le panneau" (click)="close()">×</button>
+        </header>
+        @if (mode() === 'view') {
+          @if (selected(); as item) {
+            <div class="editor-content">
+              <dl>
+                @for (field of fields; track field.key) {
+                  <dt>{{ field.label }}</dt>
+                  <dd>{{ item[field.key] || '—' }}</dd>
+                }
+              </dl>
+            </div>
+            <footer class="editor-footer">
+              <button (click)="close()">Fermer</button
+              ><button class="primary" (click)="open('edit', item)">Modifier</button>
+            </footer>
+          }
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="editor-content">
+              <p class="form-note">Les champs marqués * sont obligatoires.</p>
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+              @for (field of fields; track field.key) {
+                <label [for]="'client-' + field.key"
+                  >{{ field.label }} {{ field.required ? '*' : '(facultatif)' }}</label
+                >
+                <input
+                  [id]="'client-' + field.key"
+                  [formControlName]="field.key"
+                  [type]="field.key === 'telephone' ? 'tel' : 'text'"
+                  [attr.autocomplete]="field.autocomplete"
+                  [maxlength]="field.required ? 200 : 80"
+                  [required]="field.required"
+                  [attr.aria-invalid]="
+                    form.controls[field.key].touched && form.controls[field.key].invalid
+                  "
+                  [attr.aria-describedby]="
+                    form.controls[field.key].touched && form.controls[field.key].invalid
+                      ? 'error-' + field.key
+                      : null
+                  "
+                />
+                @if (form.controls[field.key].touched && form.controls[field.key].invalid) {
+                  <small class="field-error" [id]="'error-' + field.key"
+                    >Renseignez {{ field.label.toLowerCase() }} ({{
+                      field.required ? 200 : 80
+                    }}
+                    caractères maximum).</small
+                  >
+                }
+              }
+            </div>
+            <footer class="editor-footer">
+              <button type="button" (click)="close()">Annuler</button>
+              <button type="submit" class="primary">
+                {{ mode() === 'create' ? 'Créer le client' : 'Enregistrer' }}
+              </button>
+            </footer>
+          </form>
+        }
+      </aside>
+    }
+  </div>
+</section>

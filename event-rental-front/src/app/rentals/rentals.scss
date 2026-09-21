@@ -1,0 +1,251 @@
+.rental-card {
+  background: white;
+  border: 1px solid #e4e4e4;
+  border-radius: 7px;
+  padding: 20px;
+  margin-bottom: 20px;
+  min-width: 0;
+}
+.required {
+  color: #b91c1c;
+  font-size: 12px;
+}
+input[aria-invalid='true'] {
+  border-color: #b91c1c;
+}
+h2 {
+  margin-bottom: 18px;
+}
+.rental-list {
+  padding: 0;
+  overflow: hidden;
+}
+.rental-list th {
+  text-align: center;
+}
+.rental-list th,
+.rental-list td {
+  border-right: 1px solid #e4e4e4;
+}
+.rental-list th:last-child,
+.rental-list td:last-child {
+  border-right: 0;
+}
+.rental-list tbody tr:hover {
+  background: #fdf7f7;
+}
+.status-badge {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-badge.confirmed {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+.status-badge.ongoing {
+  color: #9a3412;
+  background: #ffedd5;
+}
+.status-badge.deposit-return {
+  color: #7e22ce;
+  background: #f3e8ff;
+}
+.status-badge.completed {
+  color: #166534;
+  background: #dcfce7;
+}
+.rental-details {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 3fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.rental-details > .rental-card {
+  margin-bottom: 0;
+  padding: 16px;
+}
+.rental-details h2 {
+  margin-bottom: 12px;
+}
+.rental-details .field-grid {
+  gap: 10px 16px;
+}
+.rental-details label {
+  gap: 5px;
+}
+.rental-details input {
+  padding: 7px 10px;
+}
+.client-card .field-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.client-card label {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.client-card label input {
+  width: 70%;
+  flex-shrink: 0;
+}
+.client-field {
+  position: relative;
+  min-width: 0;
+}
+.period-card .field-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+.period-card label {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.period-card input {
+  width: 70%;
+  flex-shrink: 0;
+}
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.client-results {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  right: 0;
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 12%);
+  max-height: 220px;
+  overflow: auto;
+}
+.client-results button {
+  width: 100%;
+  border: 0;
+  text-align: left;
+}
+.item-form {
+  display: grid;
+  grid-template-columns: minmax(200px, 3fr) minmax(65px, 0.7fr) repeat(3, minmax(100px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+.calculated {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: #555;
+}
+.calculated output {
+  padding: 11px 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.items-card .table-scroll {
+  border: 1px solid #d8d8d8;
+  border-radius: 6px;
+}
+.items-card table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.items-card th {
+  background: #f3f3f3;
+  color: #4d4d4d;
+}
+.items-card th,
+.items-card td {
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+}
+.items-card th:last-child,
+.items-card td:last-child {
+  border-right: 0;
+}
+.items-card tbody tr:last-child td {
+  border-bottom: 0;
+}
+.items-card td.empty {
+  padding: 22px 16px;
+}
+.items-card tbody tr:not(:last-child):hover {
+  background: #fdf7f7;
+}
+.summary {
+  width: min(100%, 420px);
+  margin: 24px 0 0 auto;
+}
+.summary > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  font-size: 14px;
+}
+.summary input {
+  width: 160px;
+  text-align: right;
+}
+.remaining {
+  border-top: 1px solid #ddd;
+  color: #ad2b30;
+}
+.rental-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.save-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 100;
+  padding: 13px 18px;
+  border-radius: 7px;
+  color: #fff;
+  background: #166534;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+  font-weight: 600;
+}
+@media (max-width: 1200px) {
+  .item-form {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .item-form .designation {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 700px) {
+  .rental-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+  .client-card .field-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .item-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rental-card {
+    padding: 16px;
+  }
+}

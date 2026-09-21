@@ -1,0 +1,13 @@
+.filters {
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.filters label {
+  flex: 1 1 180px;
+}
+.client-address {
+  min-width: 160px;
+  max-width: 260px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

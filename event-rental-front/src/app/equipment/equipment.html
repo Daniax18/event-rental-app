@@ -1,0 +1,346 @@
+<section class="equipment-page">
+  <header class="page-header">
+    <div>
+      <h1>Matériels</h1>
+    </div>
+    <div class="page-actions">
+      <button
+        aria-controls="equipment-filters"
+        [attr.aria-expanded]="filtersVisible()"
+        (click)="filtersVisible.set(!filtersVisible())"
+      >
+        Filtre{{ query() || categoryFilter() ? ' (actif)' : '' }}
+      </button>
+      <button (click)="openCategory()">+ Nouvelle catégorie</button>
+      <button id="create-equipment" class="primary" (click)="open('create')">
+        + Nouveau matériel
+      </button>
+    </div>
+  </header>
+  @if (notice()) {
+    <div class="notice" role="status">
+      {{ notice() }}<button aria-label="Fermer le message" (click)="notice.set('')">×</button>
+    </div>
+  }
+  @if (store.storageMessage()) {
+    <p class="error" role="alert">{{ store.storageMessage() }}</p>
+  }
+  <div class="equipment-layout" [class.panel-open]="mode()">
+    <div class="listing">
+      <div id="equipment-filters" class="filters" [hidden]="!filtersVisible()">
+        <label class="search"
+          >Rechercher<input
+            type="search"
+            placeholder="Code ou désignation…"
+            [value]="query()"
+            (input)="filter($any($event.target).value, categoryFilter())"
+        /></label>
+        <label
+          >Catégorie<select
+            [value]="categoryFilter()"
+            (change)="filter(query(), $any($event.target).value)"
+          >
+            <option value="">Toutes les catégories</option>
+            @for (category of store.categories; track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select></label
+        >
+      </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Liste des matériels">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Désignation</th>
+              <th>Catégorie</th>
+              <th class="amount">Prix</th>
+              <th class="amount">Remboursement</th>
+              <th class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of visibleItems(); track item.id) {
+              <tr
+                class="equipment-row"
+                [class.selected]="selected()?.id === item.id && mode()"
+                (click)="open('view', item)"
+              >
+                <td class="code">{{ item.code }}</td>
+                <td>
+                  <button class="item-name" (click)="$event.stopPropagation(); open('view', item)">
+                    {{ item.designation }}
+                  </button>
+                </td>
+                <td>
+                  <span
+                    class="category-chip"
+                    [style.--chip-color]="categoryColor(item.categoryId)"
+                    [style.background-color]="categoryColor(item.categoryId) + '18'"
+                    >{{ categoryName(item.categoryId) }}</span
+                  >
+                </td>
+                <td class="amount">{{ formatPrice(item.price) }}</td>
+                <td class="amount">{{ formatPrice(item.reimbursement) }}</td>
+                <td class="actions">
+                  <button
+                    class="icon-button"
+                    title="Voir"
+                    [attr.aria-label]="'Voir ' + item.designation"
+                    (click)="$event.stopPropagation(); open('view', item)"
+                  >
+                    <app-icon name="eye" /></button
+                  ><button
+                    class="icon-button"
+                    title="Modifier"
+                    [attr.aria-label]="'Modifier ' + item.designation"
+                    (click)="$event.stopPropagation(); open('edit', item)"
+                  >
+                    <app-icon name="edit" />
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty">Aucun matériel trouvé.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <span>{{ firstItem() }}–{{ lastItem() }} sur {{ filtered().length }} matériels</span>
+        <nav aria-label="Pagination des matériels">
+          <button
+            aria-label="Page précédente"
+            [disabled]="page() === 1"
+            (click)="goToPage(page() - 1)"
+          >
+            ‹
+          </button>
+          @for (number of pages(); track number) {
+            <button
+              [class.current]="page() === number"
+              [attr.aria-current]="page() === number ? 'page' : null"
+              [attr.aria-label]="'Page ' + number"
+              (click)="goToPage(number)"
+            >
+              {{ number }}
+            </button>
+          }
+          <button
+            aria-label="Page suivante"
+            [disabled]="page() === pageCount()"
+            (click)="goToPage(page() + 1)"
+          >
+            ›
+          </button>
+        </nav>
+        <span>{{ pageSize }} par page</span>
+      </div>
+    </div>
+    @if (mode()) {
+      <aside class="editor" aria-labelledby="equipment-panel-title">
+        <header class="editor-header">
+          <h2 id="equipment-panel-title" tabindex="-1">
+            {{
+              mode() === 'category'
+                ? 'Nouvelle catégorie'
+                : mode() === 'create'
+                  ? 'Nouveau matériel'
+                  : mode() === 'edit'
+                    ? 'Modifier le matériel'
+                    : 'Détail du matériel'
+            }}
+          </h2>
+          <button class="close" aria-label="Fermer le panneau" (click)="close()">×</button>
+        </header>
+        @if (mode() === 'category') {
+          <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+            <div class="editor-content">
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+              <label for="category-name">Nom de la catégorie *</label>
+              <input
+                id="category-name"
+                formControlName="name"
+                maxlength="80"
+                placeholder="Ex. Chapiteau"
+                [attr.aria-invalid]="
+                  categoryForm.controls.name.touched && categoryForm.controls.name.invalid
+                "
+              />
+              @if (categoryForm.controls.name.touched && categoryForm.controls.name.invalid) {
+                <small class="field-error">Renseignez le nom de la catégorie.</small>
+              }
+              <label for="category-color">Couleur *</label>
+              <div class="color-choice">
+                <input id="category-color" type="color" formControlName="color" />
+                <span
+                  class="category-chip"
+                  [style.--chip-color]="categoryForm.controls.color.value"
+                  [style.background-color]="categoryForm.controls.color.value + '18'"
+                  >{{ categoryForm.controls.name.value.trim() || 'Aperçu' }}</span
+                >
+              </div>
+              @if (categoryForm.controls.color.touched && categoryForm.controls.color.invalid) {
+                <small class="field-error">Choisissez une couleur valide.</small>
+              }
+            </div>
+            <footer class="editor-footer">
+              <button type="button" (click)="close()">Annuler</button
+              ><button type="submit" class="primary">Créer la catégorie</button>
+            </footer>
+          </form>
+        } @else if (mode() === 'view') {
+          @if (selected(); as item) {
+            <div class="editor-content">
+              <div class="photo-preview">
+                @if (item.photo) {
+                  <img [src]="item.photo" [alt]="item.designation" />
+                } @else {
+                  <app-icon name="box" /><span>Aucune photo</span>
+                }
+              </div>
+              <dl>
+                <dt>Code</dt>
+                <dd>{{ item.code }}</dd>
+                <dt>Désignation</dt>
+                <dd>{{ item.designation }}</dd>
+                <dt>Catégorie</dt>
+                <dd>
+                  <span
+                    class="category-chip"
+                    [style.--chip-color]="categoryColor(item.categoryId)"
+                    [style.background-color]="categoryColor(item.categoryId) + '18'"
+                    >{{ categoryName(item.categoryId) }}</span
+                  >
+                </dd>
+                <dt>Prix</dt>
+                <dd>{{ formatPrice(item.price) }}</dd>
+                <dt>Remboursement</dt>
+                <dd>{{ formatPrice(item.reimbursement) }}</dd>
+              </dl>
+            </div>
+            <footer class="editor-footer">
+              <button (click)="close()">Fermer</button
+              ><button class="primary" (click)="open('edit', item)">Modifier</button>
+            </footer>
+          }
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="editor-content">
+              <p class="form-note">Les champs marqués * sont obligatoires.</p>
+              @if (error()) {
+                <p class="error" role="alert">{{ error() }}</p>
+              }
+              <label for="equipment-code">Code *</label
+              ><input
+                id="equipment-code"
+                formControlName="code"
+                maxlength="40"
+                placeholder="Ex. MAT-042"
+                [attr.aria-invalid]="form.controls.code.touched && form.controls.code.invalid"
+              />
+              @if (form.controls.code.touched && form.controls.code.invalid) {
+                <small class="field-error">Renseignez un code.</small>
+              }
+              <label for="equipment-designation">Désignation *</label
+              ><input
+                id="equipment-designation"
+                formControlName="designation"
+                maxlength="150"
+                placeholder="Désignation du matériel"
+                [attr.aria-invalid]="
+                  form.controls.designation.touched && form.controls.designation.invalid
+                "
+              />
+              @if (form.controls.designation.touched && form.controls.designation.invalid) {
+                <small class="field-error">Renseignez une désignation.</small>
+              }
+              <label for="equipment-category">Catégorie *</label
+              ><select
+                id="equipment-category"
+                formControlName="categoryId"
+                [attr.aria-invalid]="
+                  form.controls.categoryId.touched && form.controls.categoryId.invalid
+                "
+              >
+                <option [ngValue]="null">Sélectionner une catégorie</option>
+                @for (category of store.categories; track category.id) {
+                  <option [ngValue]="category.id">{{ category.name }}</option>
+                }
+              </select>
+              @if (form.controls.categoryId.touched && form.controls.categoryId.invalid) {
+                <small class="field-error">Sélectionnez une catégorie.</small>
+              }
+              <label for="equipment-price">Prix *</label>
+              <div class="currency-input">
+                <span aria-hidden="true">Ar</span
+                ><input
+                  id="equipment-price"
+                  type="number"
+                  min="0"
+                  step="any"
+                  formControlName="price"
+                  aria-label="Prix en ariary"
+                  [attr.aria-invalid]="form.controls.price.touched && form.controls.price.invalid"
+                />
+              </div>
+              @if (form.controls.price.touched && form.controls.price.invalid) {
+                <small class="field-error">Saisissez un montant positif ou nul.</small>
+              }
+              <label for="equipment-reimbursement">Remboursement *</label>
+              <div class="currency-input">
+                <span aria-hidden="true">Ar</span
+                ><input
+                  id="equipment-reimbursement"
+                  type="number"
+                  min="0"
+                  step="any"
+                  formControlName="reimbursement"
+                  aria-label="Remboursement en ariary"
+                  [attr.aria-invalid]="
+                    form.controls.reimbursement.touched && form.controls.reimbursement.invalid
+                  "
+                />
+              </div>
+              @if (form.controls.reimbursement.touched && form.controls.reimbursement.invalid) {
+                <small class="field-error">Saisissez un montant positif ou nul.</small>
+              }
+              <label for="equipment-photo">Photo <span class="optional">(facultatif)</span></label>
+              @if (photo()) {
+                <div class="photo-preview"><img [src]="photo()" alt="Aperçu du matériel" /></div>
+              }
+              <input
+                id="equipment-photo"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                (change)="selectPhoto($event)"
+              />
+              <small class="form-note">JPG, PNG ou WebP · 1 Mo maximum</small>
+              @if (photoLoading()) {
+                <p role="status">Chargement de la photo…</p>
+              }
+              @if (photoError()) {
+                <p class="field-error" role="alert">{{ photoError() }}</p>
+              }
+              @if (photo() || photoError()) {
+                <button class="text-button" type="button" (click)="removePhoto()">
+                  Retirer la photo
+                </button>
+              }
+            </div>
+            <footer class="editor-footer">
+              <button type="button" (click)="close()">Annuler</button
+              ><button class="primary" type="submit" [disabled]="photoLoading() || !!photoError()">
+                {{ mode() === 'create' ? 'Créer le matériel' : 'Enregistrer' }}
+              </button>
+            </footer>
+          </form>
+        }
+      </aside>
+    }
+  </div>
+</section>

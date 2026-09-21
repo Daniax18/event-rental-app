@@ -1,0 +1,98 @@
+<div class="invoice-screen">
+  <div class="toolbar"><button type="button" (click)="print()">Imprimer la facture</button></div>
+  @if (rental(); as invoice) {
+    <article class="invoice">
+      <p class="invoice-date">Antananarivo, le {{ date(invoice.dateLivraison) }}</p>
+      <header class="invoice-header">
+        <section class="company">
+          <strong>RAVAOHANTA Tiana Mahenintsoa</strong>
+          <h1>Mahenintsoa <em>Events</em></h1>
+          <p>NIF : 6 002 993 390</p>
+          <p>STAT : 77290 12 2018 0 00459</p>
+          <p>Tél. : 033 16 135 93</p>
+        </section>
+        @if (client(); as customer) {
+          <section class="customer">
+            <h2>Doit</h2>
+            <dl>
+              <dt>Nom / Raison sociale</dt>
+              <dd>{{ customer.nomOuRaisonSociale }}</dd>
+              <dt>Téléphone</dt>
+              <dd>{{ customer.telephone }}</dd>
+              <dt>RC / CIN</dt>
+              <dd>{{ customer.cin || '—' }}</dd>
+              <dt>STAT</dt>
+              <dd>{{ customer.stat || '—' }}</dd>
+              <dt>NIF</dt>
+              <dd>{{ customer.nif || '—' }}</dd>
+              <dt>Adresse</dt>
+              <dd>{{ customer.adresse }}</dd>
+            </dl>
+          </section>
+        }
+      </header>
+
+      <p class="rental-days">
+        Nombre de jours : <strong>{{ invoice.nombreJour }}</strong>
+      </p>
+      <h2 class="invoice-number">FACTURE N° {{ invoice.numeroFacture }}</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Quantité</th>
+            <th>Désignation</th>
+            <th>PU / jour (Ar)</th>
+            <th>PU remboursement (Ar)</th>
+            <th>Montant / jour (Ar)</th>
+            <th>Total (Ar)</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items(); track item.id) {
+            <tr>
+              <td>{{ item.qty }}</td>
+              <td>{{ item.designation }}</td>
+              <td>{{ money(item.pu) }}</td>
+              <td>{{ money(item.reimbursement) }}</td>
+              <td>{{ money(item.qty * item.pu) }}</td>
+              <td>{{ money(item.total) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <section class="totals">
+        <div>
+          <span>Total TTC</span><strong>{{ money(invoice.prixTotal) }}</strong>
+        </div>
+        <div>
+          <span>Caution</span><strong>{{ money(invoice.caution) }}</strong>
+        </div>
+        <div>
+          <span>Net à payer</span><strong>{{ money(invoice.prixTotal + invoice.caution) }}</strong>
+        </div>
+        <div>
+          <span>Avance</span><strong>{{ money(invoice.paid) }}</strong>
+        </div>
+        <div>
+          <span>Reste à payer</span
+          ><strong>{{ money(invoice.prixTotal + invoice.caution - invoice.paid) }}</strong>
+        </div>
+      </section>
+
+      <section class="invoice-footer">
+        <p><strong>Mode de paiement :</strong> ESPÈCES</p>
+        <p><strong>Date de livraison :</strong> {{ date(invoice.dateLivraison) }}</p>
+        <p><strong>Date de retour :</strong> {{ date(invoice.dateRetour) }}</p>
+        <div class="acceptance">
+          <strong>Le client</strong><br />Atteste avoir reçu les marchandises conformément à cette
+          facture.<br />Atteste avoir vérifié la quantité et l’état des marchandises livrées.<br />(Lu
+          et approuvé)
+        </div>
+      </section>
+    </article>
+  } @else {
+    <p class="not-found">Facture introuvable.</p>
+  }
+</div>
