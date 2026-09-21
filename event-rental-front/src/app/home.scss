@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  max-width: 1180px;
+  margin: auto;
+  padding: 64px 40px;
+}
+.welcome {
+  text-align: center;
+  margin-bottom: 38px;
+}
+.welcome > p {
+  margin: 0 0 16px;
+  color: #bd2e32;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+h1 {
+  margin: 0;
+  color: #292c30;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 700;
+}
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.menu-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 210px;
+  padding: 26px;
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-image: var(--card-photo);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.22;
+  pointer-events: none;
+}
+.menu-card > app-icon {
+  width: 32px;
+  height: 32px;
+}
+.dashboard {
+  --card-photo: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=800&q=80');
+  background: #623e48;
+}
+.dashboard:hover {
+  background: #52333c;
+}
+.rentals {
+  --card-photo: url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80');
+  background: #81513e;
+}
+.rentals:hover {
+  background: #704533;
+}
+.equipment {
+  --card-photo: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=800&q=80');
+  background: #4b5850;
+}
+.equipment:hover {
+  background: #3d4942;
+}
+.clients {
+  --card-photo: url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=800&q=80');
+  background: #454d60;
+}
+.clients:hover {
+  background: #363e50;
+}
+h2 {
+  font-size: 22px;
+  margin: 24px 0 8px;
+  font-weight: 600;
+}
+.menu-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #ffffffdb;
+}
+@media (max-width: 1000px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  :host {
+    padding: 40px 20px;
+  }
+  .welcome {
+    margin-bottom: 28px;
+  }
+  .welcome > p {
+    font-size: 10px;
+  }
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .menu-card {
+    min-height: 175px;
+    padding: 22px;
+  }
+}
