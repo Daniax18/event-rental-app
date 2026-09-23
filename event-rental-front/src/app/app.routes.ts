@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home';
+import { DashboardComponent } from './dashboard/dashboard';
 import { SectionComponent } from './section';
 import { MENUS } from './menus';
 
 export const routes: Routes = [
+  { path: 'tableau-de-bord', component: DashboardComponent, title: 'Tableau de bord' },
   { path: '', component: HomeComponent, title: 'Accueil · Mahenintsoa Events' },
   {
     path: 'materiels',

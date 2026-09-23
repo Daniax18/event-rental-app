@@ -76,6 +76,7 @@ export class EquipmentStore {
   constructor() {
     try {
       this.addChapiteaux();
+      this.addAssetPhotos();
       if (localStorage.getItem(this.storageKey) === null && !this.storageMessage()) {
         localStorage.setItem(this.storageKey, JSON.stringify(this.items()));
       }
@@ -126,6 +127,26 @@ export class EquipmentStore {
     this.items.set(items);
   }
 
+  /** Adds bundled catalogue photos only where no user photo has been saved. */
+  private addAssetPhotos() {
+    if (this.storageMessage()) return;
+    const photosByDesignation = new Map(
+      INITIAL_EQUIPMENT.filter((item) => item.photo).map((item) => [
+        item.designation.trim().toLowerCase(),
+        item.photo,
+      ]),
+    );
+    const items = this.items();
+    const next = items.map((item) =>
+      item.photo === null
+        ? { ...item, photo: photosByDesignation.get(item.designation.trim().toLowerCase()) ?? null }
+        : item,
+    );
+    if (!next.some((item, index) => item.photo !== items[index].photo)) return;
+    localStorage.setItem(this.storageKey, JSON.stringify(next));
+    this.items.set(next);
+  }
+
   private load(): Equipment[] {
     try {
       const current = localStorage.getItem(this.storageKey);
@@ -173,7 +194,7 @@ export class EquipmentStore {
       Number.isFinite(item.reimbursement) &&
       item.reimbursement >= 0 &&
       (item.photo === null ||
-        item.photo === 'assets/chaise_napoleon_argentee.png' ||
+        /^assets\/[a-z0-9_]+\.(?:jpg|png|webp)$/i.test(item.photo) ||
         (typeof item.photo === 'string' && /^data:image\/(png|jpeg|webp);base64,/.test(item.photo)))
     );
   }
