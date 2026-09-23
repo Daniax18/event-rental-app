@@ -47,7 +47,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chaise Napoléon dorée',
     price: 5000,
     reimbursement: 150000,
-    photo: null,
+    photo: 'assets/chaise_napoleon_dore.jpg',
   },
   {
     id: 2,
@@ -65,7 +65,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chaise simple en plastique',
     price: 1500,
     reimbursement: 40000,
-    photo: null,
+    photo: 'assets/chaise_blanche.jpg',
   },
   {
     id: 4,
@@ -74,7 +74,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chaise des mariés',
     price: 25000,
     reimbursement: 500000,
-    photo: null,
+    photo: 'assets/chaises_maries.jpg',
   },
   {
     id: 5,
@@ -83,7 +83,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chaise pliable',
     price: 3000,
     reimbursement: 80000,
-    photo: null,
+    photo: 'assets/chaise_pliable.jpg',
   },
   {
     id: 6,
@@ -92,7 +92,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Table ronde – 8 personnes',
     price: 18000,
     reimbursement: 300000,
-    photo: null,
+    photo: 'assets/table_ronde_8_personnes.jpg',
   },
   {
     id: 7,
@@ -101,7 +101,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Table ronde – 10 personnes',
     price: 22000,
     reimbursement: 380000,
-    photo: null,
+    photo: 'assets/table_ronde_10_personnes.jpg',
   },
   {
     id: 8,
@@ -110,7 +110,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Table rectangulaire – 8 personnes',
     price: 15000,
     reimbursement: 250000,
-    photo: null,
+    photo: 'assets/table_rectangulaire_8_personnes.jpg',
   },
   {
     id: 9,
@@ -119,7 +119,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Table rectangulaire – 10 personnes',
     price: 18000,
     reimbursement: 300000,
-    photo: null,
+    photo: 'assets/table_rectangulaire_10_personnes.jpg',
   },
   {
     id: 10,
@@ -128,7 +128,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Bougeoir simple',
     price: 2000,
     reimbursement: 25000,
-    photo: null,
+    photo: 'assets/chandelier_dore.jpg',
   },
   {
     id: 11,
@@ -137,7 +137,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chandelier à 3 branches',
     price: 5000,
     reimbursement: 70000,
-    photo: null,
+    photo: 'assets/chandelier_3_branches.jpg',
   },
   {
     id: 12,
@@ -146,7 +146,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chandelier à 5 branches',
     price: 8000,
     reimbursement: 120000,
-    photo: null,
+    photo: 'assets/chandelier_5_branches.jpg',
   },
   {
     id: 13,
@@ -182,7 +182,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Assiette plate',
     price: 500,
     reimbursement: 8000,
-    photo: null,
+    photo: 'assets/assiette_plate.jpg',
   },
   {
     id: 17,
@@ -191,7 +191,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Assiette creuse',
     price: 500,
     reimbursement: 8000,
-    photo: null,
+    photo: 'assets/assiette_creuse.jpg',
   },
   {
     id: 18,
@@ -209,7 +209,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Verre à eau',
     price: 400,
     reimbursement: 5000,
-    photo: null,
+    photo: 'assets/verre_a_eau.jpg',
   },
   {
     id: 20,
@@ -218,7 +218,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Verre à vin',
     price: 600,
     reimbursement: 8000,
-    photo: null,
+    photo: 'assets/verre_a_vin.jpg',
   },
   {
     id: 21,
@@ -227,7 +227,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Cuillère',
     price: 300,
     reimbursement: 3000,
-    photo: null,
+    photo: 'assets/cuillere_argentee.jpg',
   },
   {
     id: 22,
@@ -236,7 +236,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Fourchette',
     price: 300,
     reimbursement: 3000,
-    photo: null,
+    photo: 'assets/fourchette_argentee.jpg',
   },
   {
     id: 23,
@@ -245,7 +245,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Couteau',
     price: 400,
     reimbursement: 5000,
-    photo: null,
+    photo: 'assets/couteau_argente.jpg',
   },
   {
     id: 24,
@@ -290,7 +290,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Cordon rouge pour potelet',
     price: 5000,
     reimbursement: 70000,
-    photo: null,
+    photo: 'assets/cordon_rouge_potelet.jpg',
   },
   {
     id: 29,
@@ -299,7 +299,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Cordon doré pour potelet',
     price: 6000,
     reimbursement: 80000,
-    photo: null,
+    photo: 'assets/cordon_dore_potelet.jpg',
   },
   {
     id: 30,
@@ -308,7 +308,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chauffe-plat ovale',
     price: 25000,
     reimbursement: 450000,
-    photo: null,
+    photo: 'assets/chauffe_plat_ovale.jpg',
   },
   {
     id: 31,
@@ -317,7 +317,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chauffe-plat rectangulaire',
     price: 25000,
     reimbursement: 450000,
-    photo: null,
+    photo: 'assets/chauffe_plat_rectangulaire.jpg',
   },
   {
     id: 32,
@@ -326,7 +326,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chauffe-plat rond',
     price: 22000,
     reimbursement: 400000,
-    photo: null,
+    photo: 'assets/chauffe_plat_rond.jpg',
   },
   {
     id: 33,
@@ -335,7 +335,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chauffe-plat double bac',
     price: 35000,
     reimbursement: 600000,
-    photo: null,
+    photo: 'assets/chauffe_plat_double_bac.jpg',
   },
   {
     id: 34,
@@ -344,7 +344,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chauffe-plat électrique',
     price: 40000,
     reimbursement: 700000,
-    photo: null,
+    photo: 'assets/chauffe_plat_electrique.jpg',
   },
   {
     id: 35,
@@ -353,7 +353,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chauffe-plat avec couvercle vitré',
     price: 35000,
     reimbursement: 650000,
-    photo: null,
+    photo: 'assets/chauffe_plat_couvercle_vitre.jpg',
   },
   {
     id: 36,
@@ -362,7 +362,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Porte-bouquet doré',
     price: 12000,
     reimbursement: 180000,
-    photo: null,
+    photo: 'assets/porte_bouquet_dore.jpg',
   },
   {
     id: 37,
@@ -371,7 +371,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Porte-bouquet argenté',
     price: 12000,
     reimbursement: 180000,
-    photo: null,
+    photo: 'assets/porte_bouquet_argente.jpg',
   },
   {
     id: 38,
@@ -389,7 +389,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Colonne pour bouquet',
     price: 20000,
     reimbursement: 300000,
-    photo: null,
+    photo: 'assets/colonne_bouquet_blanc.jpg',
   },
   {
     id: 40,
@@ -398,7 +398,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Vase décoratif',
     price: 8000,
     reimbursement: 100000,
-    photo: null,
+    photo: 'assets/vase_decoratif.jpg',
   },
   {
     id: 41,
@@ -407,7 +407,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Composition florale artificielle',
     price: 15000,
     reimbursement: 200000,
-    photo: null,
+    photo: 'assets/composition_florale_artificielle.jpg',
   },
   {
     id: 42,
@@ -416,7 +416,7 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Chapiteaux 3 x 3',
     price: 50000,
     reimbursement: 1000000,
-    photo: null,
+    photo: 'assets/chapiteaux.jpg',
   },
   {
     id: 43,
@@ -425,6 +425,6 @@ export const INITIAL_EQUIPMENT: Equipment[] = [
     designation: 'Pagode 3 x 6',
     price: 100000,
     reimbursement: 2000000,
-    photo: null,
+    photo: 'assets/pagode.jpg',
   },
 ];
